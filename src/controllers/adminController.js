@@ -1,20 +1,22 @@
 const Product = require("../models/Product")
 const Category = require("../models/Category")
 
+
 exports.getAdminDashboard = (req, res) => {
   res.render("admin/index", { user: req.user })
 }
+
 exports.getCategories = async (req, res) => {
   const categories = await Category.find()
   res.render("admin/categories/index", { categories, user: req.user })
 }
+
 exports.createCategory = (req, res) => {
   res.render("admin/categories/create", { user: req.user })
 }
 
 exports.storeCategory = async (req, res) => {
   const { name, description } = req.body
-
   if (!name || !description) {
     return res.status(400).render("admin/categories/create", {
       user: req.user,
@@ -42,19 +44,15 @@ exports.getProducts = async (req, res) => {
 
 exports.createProduct = async (req, res) => {
   const categories = await Category.find()
-  console.log(categories)
   res.render("admin/products/create", { categories, user: req.user })
 }
 
 exports.storeProduct = async (req, res) => {
   const categories = await Category.find()
-  //console.log(req.file.filename)
   const { name, description, price, category } = req.body
   const image = req.file ? req.file.filename : null
-  console.log(name, description, price, category)
 
   if (!name || !description || !price || !category) {
-    console.log("Checking fields")
     return res.status(400).render("admin/products/create", {
       categories,
       user: req.user,
@@ -73,6 +71,7 @@ exports.storeProduct = async (req, res) => {
     })
   }
 }
+
 exports.getProduct = (req, res) => {
   const id = req.params.id
   const product = Product.findOne({ id })
@@ -83,7 +82,6 @@ exports.getProduct = (req, res) => {
 exports.editProduct = async (req, res) => {
   try {
     const { name, description, price, category, image } = req.body
-    console.log(name, description, price, category, image)
     const updatedProduct = await Product.findByIdAndUpdate(
       req.params.id,
       { name, description, price, category, image },
@@ -96,7 +94,6 @@ exports.editProduct = async (req, res) => {
 
     res.redirect("/admin/products")
   } catch (error) {
-    console.error(error)
     res.status(500).send("Server Error")
   }
 }
@@ -104,7 +101,6 @@ exports.editProduct = async (req, res) => {
 exports.deleteProduct = async (req, res) => {
   try {
     const id = req.params.id
-    console.log("Deleting Product ID:", id)
     const product = await Product.findByIdAndDelete(id)
 
     if (!product) {

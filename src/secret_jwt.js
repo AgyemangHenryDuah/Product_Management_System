@@ -4,3 +4,6 @@ const crypto = require("crypto");
 const secretKey = crypto.randomBytes(64).toString("hex");
 
 console.log("JWT Secret Key:", secretKey);
+
+//dhokabeatz2gmail.com:adminpassword
+//test@gmail.com:testpassword
