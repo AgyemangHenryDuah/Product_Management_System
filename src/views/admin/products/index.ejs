@@ -1,0 +1,146 @@
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h2>Manage Products</h2>
+        <a href="/admin/products/create" class="btn btn-primary">Add New Product</a>
+    </div>
+    <div class="card-body">
+        <% if (products.length> 0) { %>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Price</th>
+                        <th>Category</th>
+                        <th>Image</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% products.forEach(product=> { %>
+                        <tr>
+                            <td>
+                                <%= product.name %>
+                            </td>
+                            <td>
+                                <%= product.description %>
+                            </td>
+                            <td>$<%= product.price %>
+                            </td>
+                            <td>
+                                <%= product.category ? product.category.name : 'N/A' %>
+                            </td>
+                            <td>
+                                <img style="width:30px; height:30px; border-radius:5px;"
+                                    src="/uploads/<%= product.image %>" alt="Image">
+                            </td>
+                            <td>
+                                <!-- Edit button triggers the modal -->
+                                <button type="button" class="btn btn-sm btn-info"
+                                    data-id="<%= product._id %>"
+                                    data-name="<%= product.name %>" data-description="<%= product.description %>"
+                                    data-price="<%= product.price %>"
+                                    data-category="<%= product.category ? product.category.id : '' %>"
+                                    data-image="<%= product.image %>" id="editBtn_<%= product.id %>">
+                                    Edit
+                                </button>
+
+                                <form action="/admin/products/<%= product._id %>/delete" method="POST" class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-danger"
+                                        onclick="return confirm('Are you sure?')">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        <% }); %>
+                </tbody>
+            </table>
+            <% } else { %>
+                <div class="alert alert-info">No products found.</div>
+                <% } %>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Edit Product</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="POST" id="editProductForm">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="productName">Name</label>
+                        <input type="text" class="form-control" id="productName" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="productDescription">Description</label>
+                        <textarea class="form-control" id="productDescription" name="description" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="productPrice">Price</label>
+                        <input type="number" class="form-control" id="productPrice" name="price" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="productCategory">Category</label>
+                        <select class="form-control" id="productCategory" name="category" required>
+                            <option value="">Select Category</option>
+                            <% categories.forEach(category=> { %>
+                                <option value="<%= category.id %>">
+                                    <%= category.name %>
+                                </option>
+                                <% }); %>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="productImage">Image</label>
+                        <input type="text" class="form-control" id="productImage" name="image">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript for Modal -->
+<script>
+    // JavaScript for Edit Modal
+    const editButtons = document.querySelectorAll('button[id^="editBtn_"]');
+    const editForm = document.getElementById('editProductForm');
+
+    editButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            console.log(111);
+            const productId = button.getAttribute('data-id');
+            console.log(productId)
+            const name = button.getAttribute('data-name');
+            const description = button.getAttribute('data-description');
+            const price = button.getAttribute('data-price');
+            const category = button.getAttribute('data-category');
+            const image = button.getAttribute('data-image');
+
+            // Populate the form fields
+            document.getElementById('productName').value = name;
+            document.getElementById('productDescription').value = description;
+            document.getElementById('productPrice').value = price;
+            document.getElementById('productCategory').value = category;
+            document.getElementById('productImage').value = image;
+
+            console.log("productId", productId)
+
+            // Set the form's action to include the product ID
+            editForm.action = `/admin/product/edit/${productId}`;
+
+            // Show the modal
+            $('#exampleModalCenter').modal('show');
+        });
+    });
+</script>

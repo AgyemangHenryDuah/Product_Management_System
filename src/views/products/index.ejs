@@ -1,0 +1,97 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Products</h2>
+</div>
+
+<% if (products.length===0) { %>
+    <div class="alert alert-info">No products found.</div>
+    <% } else { %>
+        <div class="row">
+            <% products.forEach(product=> { %>
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <img src="/uploads/<%= product.image %>" class="card-img-top" alt="<%= product.name %>">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <%= product.name %>
+                            </h5>
+
+                            <p class="card-text">
+                                <%= product.description %>
+                            </p>
+
+                            <p class="card-text">
+                                <strong>Price: </strong>$<%= product.price %>
+                            </p>
+
+                            <button class="btn btn-info view-details-btn" data-id="<%= product.id %>"
+                                data-name="<%= product.name %>" data-description="<%= product.description %>"
+                                data-price="<%= product.price %>" data-image="/uploads/<%= product.image %>">
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <% }); %>
+        </div>
+        <% } %>
+
+            <!-- Modal Structure -->
+            <div class="modal fade" id="productDetailsModal" tabindex="-1" role="dialog"
+                aria-labelledby="productDetailsModalTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="productDetailsModalTitle">Product Details</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="card">
+                                <img id="modalProductImage" class="card-img-top" alt="Product Image">
+                                <div class="card-body">
+                                    <h5 class="card-title" id="modalProductName"></h5>
+                                    <p class="card-text" id="modalProductDescription"></p>
+                                    <p class="card-text"><strong>Price: </strong>$<span id="modalProductPrice"></span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- JavaScript to Handle Modal Population -->
+            <script>
+                document.addEventListener('DOMContentLoaded', () => {
+                    const viewDetailsButtons = document.querySelectorAll('.view-details-btn');
+                    const modal = document.getElementById('productDetailsModal');
+                    const modalTitle = document.getElementById('productDetailsModalTitle');
+                    const modalProductName = document.getElementById('modalProductName');
+                    const modalProductDescription = document.getElementById('modalProductDescription');
+                    const modalProductPrice = document.getElementById('modalProductPrice');
+                    const modalProductImage = document.getElementById('modalProductImage');
+
+                    viewDetailsButtons.forEach(button => {
+                        button.addEventListener('click', () => {
+                            const name = button.getAttribute('data-name');
+                            const description = button.getAttribute('data-description');
+                            const price = button.getAttribute('data-price');
+                            const image = button.getAttribute('data-image');
+
+                            // Populate modal content
+                            modalTitle.textContent = `Details for ${name}`;
+                            modalProductName.textContent = name;
+                            modalProductDescription.textContent = description;
+                            modalProductPrice.textContent = price;
+                            modalProductImage.src = image;
+
+                            // Show modal
+                            $('#productDetailsModal').modal('show');
+                        });
+                    });
+                });
+            </script>

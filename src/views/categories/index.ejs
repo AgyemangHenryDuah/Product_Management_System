@@ -1,0 +1,29 @@
+<div class="card">
+    <div class="card-header">
+        <h2>Categories</h2>
+    </div>
+    <div class="card-body">
+        <% if (typeof categories !=='undefined' && categories.length> 0) { %>
+            <div class="row">
+                <% categories.forEach(category=> { %>
+                    <div class="col-md-4 mb-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <%= category.name %>
+                                </h5>
+                                <p class="card-text">
+                                    <%= category.description %>
+                                </p>
+                                <a href="/categories/<%= category.id %>/products" class="btn btn-primary">View
+                                    Products</a>
+                            </div>
+                        </div>
+                    </div>
+                    <% }); %>
+            </div>
+            <% } else { %>
+                <div class="alert alert-info">No categories found.</div>
+                <% } %>
+    </div>
+</div>
